@@ -1,0 +1,84 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+}
+
+button {
+    cursor: pointer;
+    background-color: var(--color-primary);
+    border-radius: var(--border-radius);
+    padding: 10px 20px;
+    border: none;
+    border-bottom: 2px solid var(--color-dark-primary);
+    color: var(--color-white);
+    transition: background-color 100ms ease-in;
+}
+
+button:hover {
+    background-color: var(--color-white-primary);
+}
+
+button:active {
+    background-color: var(--color-dark-primary);
+}
+
+/* UI Библиотека */
+
+:root {
+    --color-primary: #5D44F8;
+    --color-secondary: #F5BC39;
+    --color-dark: #161616;
+    --color-white: #EEF0F5;
+    --color-dark-primary: #3D23E0;
+    --color-dark-secondary: #CF940C;
+    --color-dark-gray: #252525;
+    --color-white-primary: #725BFF;
+    --color-white-secondary: #E5C884;
+    --border-radius: 20px;
+    --half-border-radius: 10px;
+}
+
+button.secondary {
+    background-color: var(--color-secondary);
+    border-bottom: 2px solid var(--color-dark-secondary);
+    color: var(--color-dark);
+}
+
+button.secondary:hover {
+    background-color: var(--color-white-secondary);
+}
+
+button.secondary:active {
+    background-color: var(--color-dark-secondary);
+}
+
+button.dark {
+    background-color: var(--color-dark-gray);
+    border-bottom: 2px solid var(--color-dark);
+    color: var(--color-white);
+}
+
+button.dark:hover {
+    background-color: #343333;
+}
+
+button.dark:active {
+    background-color: var(--color-dark);
+}
+
+button.white {
+    background-color: var(--color-white);
+    border-bottom: 2px solid #DBDBDB;
+    color: var(--color-dark);
+}
+
+button.white:hover {
+    background-color: #FDFDFF;
+}
+
+button.white:active {
+    background-color: #DBDBDB;
+}
+
