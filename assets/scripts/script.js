@@ -1,6 +1,7 @@
 // Модалки
 let regModal = document.querySelector("#reg-modal");
 let loginModal = document.querySelector("#login-modal");
+let buyModal = document.querySelector("#buy-modal");
 
 function clearAllInputs(modal) {
     modal.querySelectorAll("input").forEach(function (input) {
@@ -53,3 +54,19 @@ document
             }
         });
     });
+
+document.querySelector('#buy').addEventListener('click', () => {
+  if (buyModal) {
+    buyModal.showModal();
+
+    let close = buyModal.querySelector("#dialog__buy_close");
+    if (close) {
+        close.addEventListener("click", function () {
+            buyModal.close();
+            clearAllInputs(buyModal);
+        });
+    }
+  } else {
+    alert("Buy Modal not found");
+  }
+});

@@ -1,0 +1,53 @@
+#data {
+    padding-top: 155px;
+    padding-bottom: 50px;
+}
+
+#data .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.data-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.data__item {
+    width: 840px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.data__id {
+    width: 40px;
+    margin-top: 21px;
+}
+
+.data__item .accordion {
+    background-color: #1F1F1F;
+    width: 768px;
+}
+
+.data__item .accordion .accordion__content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.data__item-info {
+    font-weight: 300;
+    font-size: 15px;
+}
+
+.data__item-info span {
+    font-weight: 600;
+}
+
+.data__buttons-group {
+    display: flex;
+    gap: 10px;
+}

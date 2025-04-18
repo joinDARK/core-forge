@@ -33,3 +33,26 @@
         <button type="button" id="swap_to_reg">Нету акаунта? Зарегистрироваться</button>
     </form>
 </dialog>
+
+
+<dialog id="buy-modal">
+    <form method="post" id="buy_form">
+        <div class="dialog__header">
+            <p class="dialog__title">Заказать товары</p>
+            <button type="button" class="dialog__close" id="dialog__buy_close">
+                <img src="../assets/imgs/icons/X.svg" alt="close">
+            </button>
+        </div>
+        <div class="dialog__body">
+            <input type="text" name="name" placeholder="Имя" required>
+            <input type="text" name="address" placeholder="Адрес" required>
+            <input type="text" name="phone" placeholder="Контактный номер" required>
+            <select name="payment_method" id="payment_method" placeholder="Способ оплаты" required>
+                <option value="Банковской картой">Банковской картой</option>
+                <option value="Наличными">Наличными</option>
+                <option value="СБП">СБП</option>
+            </select>
+        </div>
+        <button type="submit" class="dialog__submit">Заказать</button>
+    </form>
+</dialog>
