@@ -6,12 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>КорФордж</title>
     <link rel="stylesheet" href="assets/style/style.css">
+    <link rel="stylesheet" href="assets/style/adaptive.css">
     <link rel="shortcut icon" href="assets/imgs/logo/logo.svg" type="image/x-icon">
 </head>
 
 <body>
     <?php
     require 'components/modals.php';
+    require 'components/burger_menu.php';
     require 'components/header.php';
     ?>
     <header>
@@ -64,7 +66,9 @@
                     <button>Перейти в каталог</button>
                 </a>
             </div>
-            <img src="assets/imgs/new/rtx.png" alt="rtx">
+            <div class="crop-container">
+                <img src="assets/imgs/new/rtx.png" alt="rtx">
+            </div>
         </div>
     </section>
     <section id="discount">

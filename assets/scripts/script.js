@@ -2,6 +2,7 @@
 let regModal = document.querySelector("#reg-modal");
 let loginModal = document.querySelector("#login-modal");
 let buyModal = document.querySelector("#buy-modal");
+let burgerMenuModal = document.querySelector("#burger-menu");
 
 function clearAllInputs(modal) {
     modal.querySelectorAll("input").forEach(function (input) {
@@ -10,7 +11,7 @@ function clearAllInputs(modal) {
 }
 
 document
-    .querySelectorAll("#reg-button, #swap_to_reg")
+    .querySelectorAll(".reg-button, #swap_to_reg")
     .forEach(function (button) {
         button.addEventListener("click", function () {
             if (regModal) {
@@ -33,7 +34,7 @@ document
     });
 
 document
-    .querySelectorAll("#swap_to_sign_in, #login-button")
+    .querySelectorAll("#swap_to_sign_in, .login-button")
     .forEach(function (button) {
         button.addEventListener("click", function () {
             if (loginModal) {
@@ -55,18 +56,33 @@ document
         });
     });
 
-document.querySelector('#buy').addEventListener('click', () => {
-  if (buyModal) {
-    buyModal.showModal();
+document.querySelector("#burger-menu__open").addEventListener("click", () => {
+    if (burgerMenuModal) {
+        burgerMenuModal.showModal();
 
-    let close = buyModal.querySelector("#dialog__buy_close");
-    if (close) {
-        close.addEventListener("click", function () {
-            buyModal.close();
-            clearAllInputs(buyModal);
-        });
+        let close = burgerMenuModal.querySelector("#burger-menu__close");
+        if (close) {
+            close.addEventListener("click", function () {
+                burgerMenuModal.close();
+            });
+        }
+    } else {
+        alert("Burger Menu Modal not found");
     }
-  } else {
-    alert("Buy Modal not found");
-  }
+});
+
+document.querySelector("#buy").addEventListener("click", () => {
+    if (buyModal) {
+        buyModal.showModal();
+
+        let close = buyModal.querySelector("#dialog__buy_close");
+        if (close) {
+            close.addEventListener("click", function () {
+                buyModal.close();
+                clearAllInputs(buyModal);
+            });
+        }
+    } else {
+        alert("Buy Modal not found");
+    }
 });
