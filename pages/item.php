@@ -12,6 +12,7 @@
 
 <body>
     <?php
+    session_start();
     require '../components/modals.php';
     require '../components/burger_menu.php';
     require '../components/header.php';
@@ -52,8 +53,10 @@
                             </svg>
                         </div>
                         <div class="accordion__content">
-                            <p class="desc">Описание товара, которое должно занимать примерно максимум 4 строки текста.
+                            <div class="accordion__content-inner">
+                                <p class="desc">Описание товара, которое должно занимать примерно максимум 4 строки текста.
                                 Для этого надо смотреть, как это выглядит</p>
+                            </div>
                         </div>
                     </div>
                     <div class="accordion">
@@ -66,13 +69,15 @@
                             </svg>
                         </div>
                         <div class="accordion__content">
-                            <div class="spec">
-                                <p class="spec__info"><span>Графический процессор:</span> GeForce RTX 5090</p>
-                                <p class="spec__info"><span>Объем видеопамяти:</span> 32 ГБ GDDR7</p>
-                                <p class="spec__info"><span>Тип и количество видеоразъемов:</span> 3 DisplayPort, HDMI
-                                </p>
-                                <p class="spec__info"><span>Потребляемая мощность:</span> 575 W</p>
-                                <p class="spec__info"><span>Разъемы дополнительного питания:</span> 16 pin (12V-2x6)</p>
+                            <div class="accordion__content-inner">
+                                <div class="spec">
+                                    <p class="spec__info"><span>Графический процессор:</span> GeForce RTX 5090</p>
+                                    <p class="spec__info"><span>Объем видеопамяти:</span> 32 ГБ GDDR7</p>
+                                    <p class="spec__info"><span>Тип и количество видеоразъемов:</span> 3 DisplayPort, HDMI
+                                    </p>
+                                    <p class="spec__info"><span>Потребляемая мощность:</span> 575 W</p>
+                                    <p class="spec__info"><span>Разъемы дополнительного питания:</span> 16 pin (12V-2x6)</p>
+                                </div>
                             </div>
                         </div>
 
@@ -87,15 +92,17 @@
                             </svg>
                         </div>
                         <div class="accordion__content">
-                            <div class="files">
-                                <a href="" class="file">
-                                    Полные характеристики
-                                    <img src="../assets/imgs/icons/attach_file.svg" alt="attach_file">
-                                </a>
-                                <a href="" class="file">
-                                    Гайды
-                                    <img src="../assets/imgs/icons/attach_file.svg" alt="attach_file">
-                                </a>
+                            <div class="accordion__content-inner">
+                                <div class="files">
+                                    <a href="" class="file">
+                                        Полные характеристики
+                                        <img src="../assets/imgs/icons/attach_file.svg" alt="attach_file">
+                                    </a>
+                                    <a href="" class="file">
+                                        Гайды
+                                        <img src="../assets/imgs/icons/attach_file.svg" alt="attach_file">
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -144,6 +151,7 @@
     require "../components/footer.php";
     ?>
     <script src="../assets/scripts/script.js" defer></script>
+    <script src="../assets/scripts/accordion.js" defer></script>
 </body>
 
 </html>

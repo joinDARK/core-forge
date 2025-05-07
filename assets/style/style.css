@@ -143,13 +143,19 @@ button.transparent:active {
 }
 
 input,
-select {
+select,
+textarea {
     background-color: var(--color-dark-gray);
     border: 1px solid #646464;
     border-radius: var(--half-border-radius);
     color: var(--color-white);
     padding: 11.5px 20px;
+    font-size: 14px;
     transition: border 100ms ease-in;
+}
+
+textarea {
+    resize: vertical;
 }
 
 input:focus-visible,
@@ -157,18 +163,22 @@ input:focus,
 input:hover,
 select:focus-visible,
 select:focus,
-select:hover {
+select:hover,
+textarea:hover,
+textarea:focus {
     outline: none;
     border: 1px solid var(--color-primary);
 }
 
 input:user-invalid,
-select:user-invalid {
+select:user-invalid,
+textarea:user-invalid {
     border: 1px solid #d14545;
 }
 
 input:user-valid,
-select:user-valid {
+select:user-valid,
+textarea:user-valid {
     border: 1px solid #41862a;
 }
 
@@ -288,26 +298,43 @@ dialog form {
     padding: 5px;
 }
 
+/* =======  Аккордеон  ======= */
 .accordion {
-    background-color: #323232;
+    background: #323232;
     border-radius: var(--border-radius);
+    overflow: hidden; /* чтобы скругления работали при анимации */
+    margin-bottom: 16px;
 }
 
+/* ─── Заголовок ─── */
 .accordion__header {
     padding: 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     cursor: pointer;
-
     font-size: 18px;
     font-weight: 600;
-    font-family: "Montserrat", sans-serif;
+    user-select: none;
 }
 
+.accordion__header svg {
+    transition: transform 0.3s ease;
+    transform: rotate(90deg);
+}
+.accordion.is-open .accordion__header svg {
+    transform: rotate(0deg);
+}
+
+/* ─── Контент ─── */
 .accordion__content {
-    padding-left: 20px;
-    padding-right: 20px;
+    max-height: 0; /* «спрятано» */
+    overflow: hidden;
+    transition: max-height 0.35s ease;
+}
+
+.accordion__content-inner {
+    padding: 0 20px;
     padding-bottom: 20px;
 }
 
@@ -663,6 +690,9 @@ main {
 .filters_container,
 .profile_container {
     width: 264px;
+    position: sticky;
+    top: 20px;
+    height: fit-content;
 }
 
 aside {
@@ -673,11 +703,6 @@ aside {
     gap: 18px;
     background-color: #1f1f1f;
     border-radius: 20px;
-}
-
-.filters,
-.profile {
-    position: fixed;
 }
 
 .filters .title {
@@ -1104,7 +1129,7 @@ input[type="search"] {
 .history-content__items {
     display: flex;
     flex-direction: column;
-    gap: 24px
+    gap: 24px;
 }
 
 @keyframes slideIn {

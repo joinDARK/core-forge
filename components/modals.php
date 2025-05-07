@@ -1,5 +1,5 @@
 <dialog id="reg-modal">
-    <form method="post" id="reg_form">
+    <form method="post" id="reg_form" action="/lib/reg.php">
         <div class="dialog__header">
             <p class="dialog__title">Регистрация</p>
             <button type="button" class="dialog__close" id="dialog__reg_close">
@@ -18,7 +18,7 @@
 </dialog>
 
 <dialog id="login-modal">
-    <form method="post" id="login_form">
+    <form method="post" id="login_form" action="/lib/login.php">
         <div class="dialog__header">
             <p class="dialog__title">Войти в аккаунт</p>
             <button type="button" class="dialog__close" id="dialog__login_close">
@@ -34,7 +34,7 @@
     </form>
 </dialog>
 
-
+<?php if (isset($_SESSION["user"])): ?>
 <dialog id="buy-modal">
     <form method="post" id="buy_form">
         <div class="dialog__header">
@@ -56,3 +56,4 @@
         <button type="submit" class="dialog__submit">Заказать</button>
     </form>
 </dialog>
+<?php endif; ?>
