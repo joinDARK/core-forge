@@ -41,7 +41,7 @@ function btnClass(string $file): string
                 <div class="profile__info-text">
                     <p class="profile__name"><?= $_SESSION['user']['name'] ?></p>
                     <a href="mailto:<?= $_SESSION['user']['email'] ?>"
-                       class="profile__email"><?= $_SESSION['user']['email'] ?></a>
+                        class="profile__email"><?= $_SESSION['user']['email'] ?></a>
                 </div>
             </div>
 

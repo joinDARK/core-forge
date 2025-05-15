@@ -1,5 +1,12 @@
 <?php
 require '../lib/checkAuth.php';
+require_once '../lib/cart_functions.php';
+require '../connect/connect.php';
+
+$user_id = $_SESSION['user']['id'];
+$cart_items = get_cart($connect, $user_id);
+$total = 0;
+$total_quantity = 0;
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -26,8 +33,9 @@ require '../lib/checkAuth.php';
                     <div class="profile__info">
                         <img src="../assets/imgs/profiles/user.png" alt="user">
                         <div class="profile__info-text">
-                            <p class="profile__name"><?=$_SESSION['user']['name']?></p>
-                            <a href="mailto:<?=$_SESSION['user']['email']?>" class="profile__email"><?=$_SESSION['user']['email']?></a>
+                            <p class="profile__name"><?= $_SESSION['user']['name'] ?></p>
+                            <a href="mailto:<?= $_SESSION['user']['email'] ?>"
+                                class="profile__email"><?= $_SESSION['user']['email'] ?></a>
                         </div>
                     </div>
                     <a href="/pages/user_history.php">
@@ -43,48 +51,43 @@ require '../lib/checkAuth.php';
                 <table>
                     <thead>
                         <tr>
-                            <th>Название</th>
+                            <th class="item__name">Название</th>
                             <th class="item__price">Цена</th>
+                            <th class="item__price">Кол-во</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Карточка товара</td>
-                            <td class="item__price">100 000 ₽</td>
-                        </tr>
-                        <tr>
-                            <td>Карточка товара</td>
-                            <td class="item__price">100 000 ₽</td>
-                        </tr>
-                        <tr>
-                            <td>Карточка товара</td>
-                            <td class="item__price">100 000 ₽</td>
-                        </tr>
-                        <tr>
-                            <td>Карточка товара</td>
-                            <td class="item__price">100 000 ₽</td>
-                        </tr>
-                        <tr>
-                            <td>Карточка товара</td>
-                            <td class="item__price">100 000 ₽</td>
-                        </tr>
-                        <tr>
-                            <td>Карточка товара</td>
-                            <td class="item__price">100 000 ₽</td>
-                        </tr>
-                        <tr>
-                            <td>Карточка товара</td>
-                            <td class="item__price">100 000 ₽</td>
-                        </tr>
+                        <?php foreach ($cart_items as $item): ?>
+                            <?php $product = get_product_info($connect, $item['product_type'], $item['product_id']); ?>
+                            <?php if ($product): ?>
+                                <tr>
+                                    <td class="item__name"><?= htmlspecialchars($product['name'] ?? 'Нет названия') ?></td>
+                                    <td class="item__price"><?= number_format($product['price'], 0, ',', ' ') ?> ₽</td>
+                                    <td class="item__price"><?= $item['quantity'] ?></td>
+                                    <td>
+                                        <a href="/lib/remove_from_cart.php?type=<?= htmlspecialchars($item['product_type']) ?>&id=<?= (int)$item['product_id'] ?>" class="item__delete-btn">
+                                            <img src="../assets/imgs/icons/delete.svg" alt="delete">
+                                        </a>
+                                    </td>
+                                </tr>
+                                <?php
+                                $total += $product['price'] * $item['quantity'];
+                                $total_quantity += $item['quantity']; // вот здесь!
+                                ?>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td>Итого:</td>
-                            <td class="item__price">600 000 ₽</td>
+                            <td class="item__name">Итого:</td>
+                            <td class="item__price"><?= number_format($total, 0, ',', ' ') ?> ₽</td>
+                            <td class="item__price"><?=$total_quantity?></td>
+                            <td></td>
                         </tr>
                     </tfoot>
                 </table>
                 <button id="buy">Заказать товары</button>
+                <button id="clear-cart" class="secondary">Очистить корзину</button>
             </div>
         </div>
     </section>

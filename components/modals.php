@@ -36,7 +36,7 @@
 
 <?php if (isset($_SESSION["user"])): ?>
 <dialog id="buy-modal">
-    <form method="post" id="buy_form">
+    <form method="post" id="buy_form" action="/lib/create_order.php">
         <div class="dialog__header">
             <p class="dialog__title">Заказать товары</p>
             <button type="button" class="dialog__close" id="dialog__buy_close">
@@ -44,9 +44,9 @@
             </button>
         </div>
         <div class="dialog__body">
-            <input type="text" name="name" placeholder="Имя" required>
+            <input type="text" name="name" placeholder="Имя" value="<?=$_SESSION["user"]["name"]?>" required>
             <input type="text" name="address" placeholder="Адрес" required>
-            <input type="text" name="phone" placeholder="Контактный номер" required>
+            <input type="text" name="tel" placeholder="Контактный номер" required>
             <select name="payment_method" id="payment_method" placeholder="Способ оплаты" required>
                 <option value="Банковской картой">Банковской картой</option>
                 <option value="Наличными">Наличными</option>
@@ -54,6 +54,21 @@
             </select>
         </div>
         <button type="submit" class="dialog__submit">Заказать</button>
+    </form>
+</dialog>
+<dialog id="review-modal">
+    <form method="post" id="review_form">
+        <div class="dialog__header">
+            <p class="dialog__title">Оставить отзыв</p>
+            <button type="button" class="dialog__close" id="dialog__review_close">
+                <img src="../assets/imgs/icons/X.svg" alt="close">
+            </button>
+        </div>
+        <div class="dialog__body">
+            <input hidden type="text" name="name" placeholder="Имя" required>
+            <textarea name="review" placeholder="Отзыв" rows="10" required></textarea>
+        </div>
+        <button type="submit" class="dialog__submit">Отправить</button>
     </form>
 </dialog>
 <?php endif; ?>

@@ -202,10 +202,17 @@ a:hover {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    position: relative;
 }
 
 .card:hover {
     border: 1px solid var(--color-secondary);
+}
+
+.card__container {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .tag {
@@ -374,7 +381,8 @@ header .container {
 #login-modal input,
 #reg-modal input,
 #buy-modal input,
-#buy-modal select {
+#buy-modal select,
+#review-modal textarea {
     font-size: 0.875rem;
 }
 
@@ -563,12 +571,16 @@ main {
     margin: 0 49px;
     width: 100%;
     overflow: hidden;
+    scroll-behavior: smooth;
+    display: flex;
 }
 
 .slider-container__content {
     display: flex;
     justify-content: space-between;
+    gap: 72px;
     align-items: flex-start;
+    transition: transform 0.5s ease-in-out;
 }
 
 #pop {
@@ -581,7 +593,9 @@ main {
 }
 
 .card .img img {
+    width: 100%;
     object-fit: cover;
+    border-radius: 10px;
 }
 
 .fav-button {
@@ -593,15 +607,35 @@ main {
 }
 
 .fav-button path {
-    fill: none;
+    fill: transparent;
     stroke: #e62424;
     stroke-width: 2;
-    transition: all 4000ms;
+    transition: fill 200ms ease-in-out;
 }
 
 .fav-button:hover path {
     fill: #e62424;
-    transition: all 4000ms;
+    transition: fill 200ms ease-in-out;
+}
+
+.fav-button_filled {
+    position: absolute;
+    z-index: 100;
+    top: 3px;
+    right: 2px;
+    cursor: pointer;
+}
+
+.fav-button_filled path {
+    fill: #e62424;
+    stroke: #e62424;
+    stroke-width: 2;
+    transition: fill 200ms ease-in-out;
+}
+
+.fav-button_filled:hover path {
+    fill: transparent;
+    transition: fill 200ms ease-in-out;
 }
 
 .card .info {
@@ -610,6 +644,7 @@ main {
     gap: 10px;
     width: fit-content;
     margin-bottom: 10px;
+    flex-grow: 1;
 }
 
 .card .title {
@@ -782,45 +817,10 @@ input[type="search"] {
     margin-bottom: 80px;
 }
 
-.item-slider {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    width: fit-content;
-}
-
-.item-slider img {
-    width: 576px;
-    height: 576px;
+.item-info > img {
+    width: 502px;
+    height: 502px;
     object-fit: fill;
-}
-
-.item-slider__nav {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.item-slider__nav-button {
-    width: 15px;
-    height: 15px;
-    border-radius: var(--border-radius);
-    background-color: #454545;
-    cursor: pointer;
-    transition: background-color 300ms ease-in-out, transform 100ms ease-in;
-}
-
-.item-slider__nav-button:hover {
-    background-color: var(--color-secondary);
-}
-
-.item-slider__nav-button:active {
-    transform: scale(0.9);
-}
-
-.item-slider__nav-button.current {
-    background-color: var(--color-primary);
 }
 
 .info {
@@ -1154,3 +1154,26 @@ input[type="search"] {
     gap: 12px;
     align-items: center;
 }
+
+.info__form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.info__form input {
+    width: 90px;
+}
+
+.info__form button {
+    flex-grow: 1;
+}
+
+.item__delete-btn {
+    background-color: #d63030;
+    display: flex;
+    width: fit-content;
+    padding: 4px;
+    border-radius: 5px;
+}
+

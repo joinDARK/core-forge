@@ -4,8 +4,6 @@
     $password = "";
     $db = "core-forge";
 
-    global $connect;
-
     try {
         $connect = new PDO("mysql:host=$host;dbname=$db", $user, $password);
     } catch (PDOException $e) {

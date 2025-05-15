@@ -4,7 +4,7 @@
 require '../../connect/connect.php';
 require '../product_crud.php';
 
-$category = 'videocards'; // ключ из $allowedCategories → таблица `gpus`
+$category = 'ssds'; // ключ из $allowedCategories → таблица `gpus`
 
 try {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -12,7 +12,7 @@ try {
         if (!empty($_POST['delete_id'])) {
             $id = (int) $_POST['delete_id'];
             deleteProduct($category, $id);
-            header('Location: /pages/admin/gpu.php');
+            header('Location: /pages/admin/ssds.php');
             exit;
         }
 
@@ -20,11 +20,6 @@ try {
         $data = [
             'name' => trim($_POST['name'] ?? ''),
             'desc' => trim($_POST['desc'] ?? ''),
-            'graphics_processor' => trim($_POST['graphics_processor'] ?? ''),
-            'memory' => trim($_POST['memory'] ?? ''),
-            'video_connectors' => trim($_POST['video_connectors'] ?? ''),
-            'power' => trim($_POST['power'] ?? ''),
-            'additional_power_connectors' => trim($_POST['additional_power_connectors'] ?? ''),
             'price' => trim($_POST['price'] ?? ''),
         ];
 
@@ -37,7 +32,7 @@ try {
             $fileTmpPath = $_FILES['image']['tmp_name'];
             $originalName = $_FILES['image']['name'];
             $ext = pathinfo($originalName, PATHINFO_EXTENSION);
-            $newFileName = uniqid('gpu_', true) . '.' . $ext;
+            $newFileName = uniqid('ssds_', true) . '.' . $ext;
             $destPath = $uploadDir . $newFileName;
             if (!move_uploaded_file($fileTmpPath, $destPath)) {
                 throw new Exception('Ошибка загрузки изображения.');
@@ -46,7 +41,7 @@ try {
         }
 
         // 4) Валидация: все поля обязательны, кроме описания и изображения
-        foreach (['name', 'graphics_processor', 'memory', 'video_connectors', 'power', 'additional_power_connectors', 'price'] as $field) {
+        foreach (['name', 'price'] as $field) {
             if ($data[$field] === '') {
                 throw new Exception("Поле «{$field}» обязательно для заполнения.");
             }

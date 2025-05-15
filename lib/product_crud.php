@@ -2,11 +2,11 @@
 require '../../connect/connect.php';
 
 $allowedCategories = [
-    'processors' => 'processors',      // Процессоры
+    'processors' => 'cpus',      // Процессоры
     'videocards' => 'gpus',            // Видеокарты
     'motherboards' => 'motherboards',    // Материнские платы
-    'ram' => 'ram',             // Оперативная память
-    'power_supplies' => 'power_supplies',  // Блоки питания
+    'rams' => 'rams',             // Оперативная память
+    'psus' => 'psus',  // Блоки питания
     'cases' => 'cases',           // Корпуса
     'ssds' => 'ssds',            // SSD-диски
     'hdds' => 'hdds',            // HDD-диски

@@ -16,22 +16,103 @@
     require '../components/modals.php';
     require '../components/burger_menu.php';
     require '../components/header.php';
+    require '../connect/connect.php';
+
+    // --- Получаем параметры ---
+    $table = $_GET['table'] ?? '';
+    $id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
+
+    // Допустимые таблицы и их названия
+    $tables = [
+        'gpus' => 'Видеокарта',
+        'cpus' => 'Процессор',
+        'motherboards' => 'Материнская плата',
+        'rams' => 'Оперативная память',
+        'psus' => 'Блок питания',
+        'cases' => 'Корпус',
+        'ssds' => 'SSD-диск',
+        'hdds' => 'HDD-диск',
+    ];
+
+    if (!isset($tables[$table]) || $id <= 0) {
+        exit('Некорректный запрос.');
+    }
+
+    // --- Запрашиваем данные товара ---
+    $stmt = $connect->prepare("SELECT * FROM `$table` WHERE id = :id");
+    $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+    $stmt->execute();
+    $item = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$item) {
+        exit('Товар не найден.');
+    }
+
+    // --- Спецификации по категориям ---
+    $specMappings = [
+        'gpus' => [
+            'graphics_processor' => 'Графический процессор',
+            'memory' => 'Объем видеопамяти',
+            'video_connectors' => 'Тип и количество видеоразъемов',
+            'power' => 'Потребляемая мощность',
+            'additional_power_connectors' => 'Разъемы дополнительного питания',
+        ],
+        'cpus' => [
+            'cores' => 'Количество ядер',
+            'threads' => 'Количество потоков',
+            'base_clock' => 'Базовая частота',
+            'boost_clock' => 'Максимальная частота',
+            'tdp' => 'TDP',
+        ],
+        'motherboards' => [
+            'socket' => 'Сокет',
+            'chipset' => 'Чипсет',
+            'form_factor' => 'Форм-фактор',
+            'memory_slots' => 'Слотов памяти',
+            'pci_slots' => 'PCIe слотов',
+        ],
+        'rams' => [
+            'type' => 'Тип памяти',
+            'capacity' => 'Объем',
+            'speed' => 'Частота',
+            'modules' => 'Количество модулей',
+            'timings' => 'Тайминги',
+        ],
+        'psus' => [
+            'power' => 'Мощность',
+            'certification' => 'Сертификат эффективности',
+            'modular' => 'Модульность',
+            'fans' => 'Вентилятор',
+        ],
+        'cases' => [
+            'form_factor' => 'Форм-фактор',
+            'drive_bays' => 'Отсеки для дисков',
+            'front_io' => 'Порты на передней панели',
+            'cooling_support' => 'Поддержка охлаждения',
+        ],
+        'ssds' => [
+            'capacity' => 'Объем',
+            'interface' => 'Интерфейс',
+            'read_speed' => 'Скорость чтения',
+            'write_speed' => 'Скорость записи',
+        ],
+        'hdds' => [
+            'capacity' => 'Объем',
+            'rpm' => 'Скорость вращения',
+            'cache' => 'Кеш-память',
+            'interface' => 'Интерфейс',
+        ],
+    ];
+
+    // Категория товара
+    $categoryName = $tables[$table];
     ?>
     <section id="item">
         <div class="container">
             <div class="item-info">
-                <div class="item-slider">
-                    <div class="item-slider__container">
-                        <img src="../assets/imgs/items/rtx5090.png" alt="rtx5090">
-                    </div>
-                    <div class="item-slider__nav">
-                        <div class="item-slider__nav-button current"></div>
-                        <div class="item-slider__nav-button"></div>
-                        <div class="item-slider__nav-button"></div>
-                    </div>
-                </div>
+                <img src="../assets/imgs/catalog/<?=htmlspecialchars($item['img'], ENT_QUOTES)?>" alt="rtx5090">
                 <aside class="info">
-                    <p class="info__title">Карточка товара</p>
+                    <p class="info__title"><?= htmlspecialchars($item['name'], ENT_QUOTES) ?></p>
                     <div class="info__marks">
                         <div class="marks">
                             <img src="../assets/imgs/icons/filled_star.svg" alt="filled_star">
@@ -42,7 +123,7 @@
                         </div>
                         <p class="info__reviews-count">1001 отзывов</p>
                     </div>
-                    <div class="tag">Видеокарта</div>
+                    <div class="tag"><?= htmlspecialchars($categoryName, ENT_QUOTES) ?></div>
                     <div class="accordion">
                         <div class="accordion__header">
                             <p class="accordion__title">Описание товара</p>
@@ -54,8 +135,7 @@
                         </div>
                         <div class="accordion__content">
                             <div class="accordion__content-inner">
-                                <p class="desc">Описание товара, которое должно занимать примерно максимум 4 строки текста.
-                                Для этого надо смотреть, как это выглядит</p>
+                                <p class="desc"><?= nl2br(htmlspecialchars($item['desc'], ENT_QUOTES)) ?></p>
                             </div>
                         </div>
                     </div>
@@ -71,12 +151,14 @@
                         <div class="accordion__content">
                             <div class="accordion__content-inner">
                                 <div class="spec">
-                                    <p class="spec__info"><span>Графический процессор:</span> GeForce RTX 5090</p>
-                                    <p class="spec__info"><span>Объем видеопамяти:</span> 32 ГБ GDDR7</p>
-                                    <p class="spec__info"><span>Тип и количество видеоразъемов:</span> 3 DisplayPort, HDMI
-                                    </p>
-                                    <p class="spec__info"><span>Потребляемая мощность:</span> 575 W</p>
-                                    <p class="spec__info"><span>Разъемы дополнительного питания:</span> 16 pin (12V-2x6)</p>
+                                    <?php foreach ($specMappings[$table] as $field => $label): ?>
+                                        <?php if (!empty($item[$field])): ?>
+                                            <p class="spec__info">
+                                                <span><?= $label ?>:</span>
+                                                <?= htmlspecialchars($item[$field], ENT_QUOTES) ?>
+                                            </p>
+                                        <?php endif; ?>
+                                    <?php endforeach; ?>
                                 </div>
                             </div>
                         </div>
@@ -106,8 +188,18 @@
                             </div>
                         </div>
                     </div>
-                    <button class="dark">Войдите, чтобы оставить отзыв</button>
-                    <button>330 000 ₽</button>
+                    <p>Цена: <?= number_format($item['price'], 0, ',', ' ') ?> ₽</p>
+                    <?php if (!isset($_SESSION['user'])): ?>
+                        <button class="dark">Войдите, чтобы оставить отзыв</button>
+                    <?php else: ?>
+                        <button class="secondary" id="review_button">Оставить отзыв</button>
+                        <form method="post" action="/lib/add_to_cart.php" class="info__form">
+                            <input type="hidden" name="table" value="<?= htmlspecialchars($table) ?>">
+                            <input type="hidden" name="id" value="<?= (int)$id ?>">
+                            <input type="number" name="quantity" minlength="1" value="1" required>
+                            <button type="submit">В корзину</button>
+                        </form>
+                    <?php endif; ?>
                 </aside>
             </div>
             <div class="item-reviews">

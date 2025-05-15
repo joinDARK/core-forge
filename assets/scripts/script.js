@@ -4,6 +4,7 @@
 const regModal = document.querySelector("#reg-modal");
 const loginModal = document.querySelector("#login-modal");
 const buyModal = document.querySelector("#buy-modal");
+const reviewModal = document.querySelector("#review-modal");
 const burgerMenuModal = document.querySelector("#burger-menu");
 
 const $ = (sel, root = document) => root.querySelector(sel);
@@ -54,6 +55,11 @@ $("#burger-menu__close")?.addEventListener("click", () =>
 $("#buy")?.addEventListener("click", () => openModal(buyModal));
 $("#dialog__buy_close")?.addEventListener("click", () =>
     closeModal(buyModal, true)
+);
+
+$("#review_button")?.addEventListener("click", () => openModal(reviewModal));
+$("#dialog__review_close")?.addEventListener("click", () =>
+    closeModal(reviewModal, true)
 );
 
 // --------------------------------------------------
@@ -144,7 +150,45 @@ $("#login_form")?.addEventListener("submit", function (e) {
     });
 });
 
-// --------------------------------------------------
-// Готово! Поля с ошибками сразу получают :user-invalid
-// и подсвечиваются через CSS, страница не перезагружается.
-// --------------------------------------------------
+/* ---------- Заказ товара ---------- */
+$("#buy_form")?.addEventListener("submit", function (e) {
+    e.preventDefault();
+    ajaxForm(this, () => {
+        this.reset();
+        closeModal(buyModal);
+        alert("Заказ успешно оформлен!");
+    });
+});
+
+/* ---------- Отзыв ---------- */
+// $("#review_form")?.addEventListener("submit", function (e) {
+//     e.preventDefault();
+//     ajaxForm(this, () => {
+//         this.reset();
+//         closeModal(reviewModal);
+//         alert("Отзыв успешно отправлен!");
+//     });
+// });
+
+/* ---------- Удаление товара ---------- */
+$("#clear-cart")?.addEventListener("click", async function (e) {
+    e.preventDefault();
+    if (!confirm("Вы точно хотите очистить корзину?")) return;
+
+    try {
+        const res = await fetch("/lib/clear_cart.php", {
+            method: "POST",
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+            },
+        });
+        if (res.ok) {
+            // Можно сделать красивее: location.reload() или очистить таблицу вручную
+            location.reload();
+        } else {
+            alert("Ошибка при очистке корзины. Попробуйте ещё раз.");
+        }
+    } catch (err) {
+        alert("Ошибка соединения. Попробуйте позже.");
+    }
+});
