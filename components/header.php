@@ -12,9 +12,9 @@ $catalogUrl = '/pages/catalog.php';
             <?php if ($_SESSION["user"]["role"] != "admin"): ?>
                 <a href="/index.php">Главная</a>
                 <a href="/pages/catalog.php">Каталог</a>
-                <a href="../pages/user_cart.php">Корзина</a>
+                <a href="../pages/user_fav.php">Избранные</a>
                 <a href="../lib/exit.php">Выйти</a>
-                <a href="../pages/user_history.php">
+                <a href="../pages/user_cart.php">
                     <button class="primary" id="reg-button">
                         <img src="../assets/imgs/profiles/user.png" alt="user" class="user-icon">
                     </button>
@@ -31,7 +31,7 @@ $catalogUrl = '/pages/catalog.php';
                 <a href="/pages/admin/orders.php">
                     <button>Заказы</button>
                 </a>
-                <a href="#">
+                <a href="/pages/admin/reviews.php">
                     <button>Отзывы</button>
                 </a>
                 <a href="/lib/exit.php">

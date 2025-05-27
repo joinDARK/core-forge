@@ -88,7 +88,9 @@ function renderFormErrors(form, errors) {
     clearFormErrors(form);
     Object.entries(errors).forEach(([field, message]) => {
         const input = form.querySelector(`[name="${field}"]`);
-        if (!input) return;
+        if (!input) {
+            return;
+        }
 
         // 1) Встроенная валидация и псевдокласс
         setInputError(input, message);
@@ -122,6 +124,7 @@ async function ajaxForm(form, onSuccess) {
             clearFormErrors(form);
             onSuccess(json);
         } else {
+            alert("Ошибка валидации формы. Обратитесь к администратору.");
             renderFormErrors(form, json.errors || {});
         }
     } catch (e) {
@@ -146,7 +149,7 @@ $("#reg_form")?.addEventListener("submit", function (e) {
 $("#login_form")?.addEventListener("submit", function (e) {
     e.preventDefault();
     ajaxForm(this, () => {
-        window.location.href = "/"; // удачный логин → на главную
+        window.location.href = window.location.href;
     });
 });
 
@@ -157,6 +160,7 @@ $("#buy_form")?.addEventListener("submit", function (e) {
         this.reset();
         closeModal(buyModal);
         alert("Заказ успешно оформлен!");
+        location.reload(); // перезагружаем страницу, чтобы обновить корзину
     });
 });
 

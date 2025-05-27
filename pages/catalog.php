@@ -106,9 +106,6 @@
                 <a href="/pages/user_fav.php" class="burger-menu__link">
                     <button class="dark">Избранные</button>
                 </a>
-                <a href="/pages/user_history.php" class="burger-menu__link">
-                    <button class="dark">История</button>
-                </a>
                 <a href="/pages/user_cart.php" class="burger-menu__link">
                     <button class="dark">Корзина</button>
                 </a>
@@ -171,7 +168,8 @@
                                     </a>
                                     <?php if (isset($_SESSION['user']['id'])): ?>
                                         <?php if (is_favorite($connect, $_SESSION['user']['id'], $item['table_name'], $item['id'])): ?>
-                                            <a href="/lib/remove_from_fav.php?type=<?= $item['table_name'] ?>&id=<?= $item['id'] ?>" title="Убрать из избранного">
+                                            <a href="/lib/remove_from_fav.php?type=<?= $item['table_name'] ?>&id=<?= $item['id'] ?>"
+                                                title="Убрать из избранного">
                                                 <svg class="fav-button_filled" width="20" height="18" viewBox="0 0 20 18"
                                                     xmlns="http://www.w3.org/2000/svg">
                                                     <path
@@ -179,7 +177,8 @@
                                                 </svg>
                                             </a>
                                         <?php else: ?>
-                                            <a href="/lib/add_to_fav.php?type=<?= $item['table_name'] ?>&id=<?= $item['id'] ?>" title="В избранное">
+                                            <a href="/lib/add_to_fav.php?type=<?= $item['table_name'] ?>&id=<?= $item['id'] ?>"
+                                                title="В избранное">
                                                 <svg class="fav-button" width="20" height="18" viewBox="0 0 20 18"
                                                     xmlns="http://www.w3.org/2000/svg">
                                                     <path
@@ -197,9 +196,13 @@
                                     </div>
                                     <div class="bottom">
                                         <p><?= number_format($item['price'], 0, ',', ' ') ?> ₽</p>
-                                        <a href="/lib/add_to_cart.php?type=<?= $item['table_name'] ?>&id=<?= $item['id'] ?>">
+                                        <?php if (isset($_SESSION['user']['id'])): ?>
+                                            <a href="/lib/add_to_cart.php?type=<?= $item['table_name'] ?>&id=<?= $item['id'] ?>">
+                                                <button>В корзину</button>
+                                            </a>
+                                        <?php else: ?>
                                             <button>В корзину</button>
-                                        </a>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </div>

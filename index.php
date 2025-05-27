@@ -18,6 +18,33 @@
     require 'components/modals.php';
     require 'components/burger_menu.php';
     require 'components/header.php';
+    require 'connect/connect.php';
+    require_once 'lib/fav_functions.php'; // если нужно для is_favorite
+    
+    // Массив всех таблиц с категориями
+    $tables = [
+        'gpus' => 'Видеокарта',
+        'cpus' => 'Процессор',
+        'motherboards' => 'Материнская плата',
+        'rams' => 'Оперативная память',
+        'psus' => 'Блок питания',
+        'cases' => 'Корпус',
+        'ssds' => 'SSD-диск',
+        'hdds' => 'HDD-диск',
+    ];
+
+    $newProducts = [];
+    foreach ($tables as $table => $label) {
+        // Защита: если нет поля created_at — поправь!
+        $stmt = $connect->prepare("SELECT id, name, `desc`, price, img, created_at, '$table' as table_name, '$label' as category FROM `$table` ORDER BY created_at DESC LIMIT 6");
+        $stmt->execute();
+        $newProducts = array_merge($newProducts, $stmt->fetchAll(PDO::FETCH_ASSOC));
+    }
+    // Оставим только 6 самых новых товаров из всех категорий
+    usort($newProducts, function ($a, $b) {
+        return strtotime($b['created_at']) < strtotime($a['created_at']) ? 1 : -1;
+    });
+    $newProducts = array_reverse(array_slice($newProducts, 0, 6));
     ?>
     <main>
         <div class="container">
@@ -59,7 +86,7 @@
                 <div class="tag gray">Новинки</div>
                 <p class="title">Свежая партия из горна</p>
                 <p class="sub-title">Успей забрать раскаленную новинку, пока не остыла!</p>
-                <a href="#">
+                <a href="/pages/catalog.php">
                     <button>Перейти в каталог</button>
                 </a>
             </div>
@@ -76,7 +103,7 @@
                 <p class="sub-title">Ударь по ценам, пока они не остыли!</p>
                 <p class="text">— Скидки до 30% на SSD-накопители. <br> — Кэшбэк 10% бонусными монетами на следующую
                     покупку. <br> — Секретный купон: введите «КОРФОРДЖ2024» и получите +5% скидки.</p>
-                <a href="#">
+                <a href="/pages/catalog.php">
                     <button class="secondary">Перейти в каталог</button>
                 </a>
             </div>
@@ -156,138 +183,59 @@
                 <img src="assets/imgs/slider/Left.svg" alt="Left">
                 <div class="slider-container">
                     <div class="slider-container__content">
-                        <div class="card">
-                            <div class="img">
-                                <img src="assets/imgs/catalog/rtx5090.png" alt="rtx5090">
-                                <svg class="fav-button" width="20" height="18" viewBox="0 0 20 18"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M8.54918 16.0182L2.38816 9.52515C0.537281 7.57452 0.53728 4.39129 2.38816 2.44067C4.21083 0.519777 7.14313 0.519777 8.9658 2.44067C9.52799 3.03315 10.472 3.03315 11.0342 2.44067C12.8569 0.519777 15.7892 0.519776 17.6118 2.44067C19.4627 4.39129 19.4627 7.57452 17.6118 9.52515L11.4508 16.0182C10.6622 16.8493 9.33784 16.8493 8.54918 16.0182Z" />
-                                </svg>
-                            </div>
-                            <div class="info">
-                                <p class="title">Карточка товара</p>
-                                <div class="tag">Видеокарта</div>
-                                <p class="desc">Описание товара, которое должно занимать примерно максимум 4 строки
-                                    текста. Для этого надо смотреть, как это выглядит</p>
-                            </div>
-                            <div class="bottom">
-                                <p>100 000 ₽</p>
-                                <a href="#">
-                                    <button>В корзину</button>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="img">
-                                <img src="assets/imgs/catalog/rtx5090.png" alt="rtx5090">
-                                <svg class="fav-button" width="20" height="18" viewBox="0 0 20 18"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M8.54918 16.0182L2.38816 9.52515C0.537281 7.57452 0.53728 4.39129 2.38816 2.44067C4.21083 0.519777 7.14313 0.519777 8.9658 2.44067C9.52799 3.03315 10.472 3.03315 11.0342 2.44067C12.8569 0.519777 15.7892 0.519776 17.6118 2.44067C19.4627 4.39129 19.4627 7.57452 17.6118 9.52515L11.4508 16.0182C10.6622 16.8493 9.33784 16.8493 8.54918 16.0182Z" />
-                                </svg>
-                            </div>
-                            <div class="info">
-                                <p class="title">Карточка товара</p>
-                                <div class="tag">Видеокарта</div>
-                                <p class="desc">Описание товара, которое должно занимать примерно максимум 4 строки
-                                    текста. Для этого надо смотреть, как это выглядит</p>
-                            </div>
-                            <div class="bottom">
-                                <p>100 000 ₽</p>
-                                <a href="#">
-                                    <button>В корзину</button>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="img">
-                                <img src="assets/imgs/catalog/rtx5090.png" alt="rtx5090">
-                                <svg class="fav-button" width="20" height="18" viewBox="0 0 20 18"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M8.54918 16.0182L2.38816 9.52515C0.537281 7.57452 0.53728 4.39129 2.38816 2.44067C4.21083 0.519777 7.14313 0.519777 8.9658 2.44067C9.52799 3.03315 10.472 3.03315 11.0342 2.44067C12.8569 0.519777 15.7892 0.519776 17.6118 2.44067C19.4627 4.39129 19.4627 7.57452 17.6118 9.52515L11.4508 16.0182C10.6622 16.8493 9.33784 16.8493 8.54918 16.0182Z" />
-                                </svg>
-                            </div>
-                            <div class="info">
-                                <p class="title">Карточка товара</p>
-                                <div class="tag">Видеокарта</div>
-                                <p class="desc">Описание товара, которое должно занимать примерно максимум 4 строки
-                                    текста. Для этого надо смотреть, как это выглядит</p>
-                            </div>
-                            <div class="bottom">
-                                <p>100 000 ₽</p>
-                                <a href="#">
-                                    <button>В корзину</button>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="img">
-                                <img src="assets/imgs/catalog/rtx5090.png" alt="rtx5090">
-                                <svg class="fav-button" width="20" height="18" viewBox="0 0 20 18"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M8.54918 16.0182L2.38816 9.52515C0.537281 7.57452 0.53728 4.39129 2.38816 2.44067C4.21083 0.519777 7.14313 0.519777 8.9658 2.44067C9.52799 3.03315 10.472 3.03315 11.0342 2.44067C12.8569 0.519777 15.7892 0.519776 17.6118 2.44067C19.4627 4.39129 19.4627 7.57452 17.6118 9.52515L11.4508 16.0182C10.6622 16.8493 9.33784 16.8493 8.54918 16.0182Z" />
-                                </svg>
-                            </div>
-                            <div class="info">
-                                <p class="title">Карточка товара</p>
-                                <div class="tag">Видеокарта</div>
-                                <p class="desc">Описание товара, которое должно занимать примерно максимум 4 строки
-                                    текста. Для этого надо смотреть, как это выглядит</p>
-                            </div>
-                            <div class="bottom">
-                                <p>100 000 ₽</p>
-                                <a href="#">
-                                    <button>В корзину</button>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="img">
-                                <img src="assets/imgs/catalog/rtx5090.png" alt="rtx5090">
-                                <svg class="fav-button" width="20" height="18" viewBox="0 0 20 18"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M8.54918 16.0182L2.38816 9.52515C0.537281 7.57452 0.53728 4.39129 2.38816 2.44067C4.21083 0.519777 7.14313 0.519777 8.9658 2.44067C9.52799 3.03315 10.472 3.03315 11.0342 2.44067C12.8569 0.519777 15.7892 0.519776 17.6118 2.44067C19.4627 4.39129 19.4627 7.57452 17.6118 9.52515L11.4508 16.0182C10.6622 16.8493 9.33784 16.8493 8.54918 16.0182Z" />
-                                </svg>
-                            </div>
-                            <div class="info">
-                                <p class="title">Карточка товара</p>
-                                <div class="tag">Видеокарта</div>
-                                <p class="desc">Описание товара, которое должно занимать примерно максимум 4 строки
-                                    текста. Для этого надо смотреть, как это выглядит</p>
-                            </div>
-                            <div class="bottom">
-                                <p>100 000 ₽</p>
-                                <a href="#">
-                                    <button>В корзину</button>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="img">
-                                <img src="assets/imgs/catalog/rtx5090.png" alt="rtx5090">
-                                <svg class="fav-button" width="20" height="18" viewBox="0 0 20 18"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M8.54918 16.0182L2.38816 9.52515C0.537281 7.57452 0.53728 4.39129 2.38816 2.44067C4.21083 0.519777 7.14313 0.519777 8.9658 2.44067C9.52799 3.03315 10.472 3.03315 11.0342 2.44067C12.8569 0.519777 15.7892 0.519776 17.6118 2.44067C19.4627 4.39129 19.4627 7.57452 17.6118 9.52515L11.4508 16.0182C10.6622 16.8493 9.33784 16.8493 8.54918 16.0182Z" />
-                                </svg>
-                            </div>
-                            <div class="info">
-                                <p class="title">Карточка товара</p>
-                                <div class="tag">Видеокарта</div>
-                                <p class="desc">Описание товара, которое должно занимать примерно максимум 4 строки
-                                    текста. Для этого надо смотреть, как это выглядит</p>
-                            </div>
-                            <div class="bottom">
-                                <p>100 000 ₽</p>
-                                <a href="#">
-                                    <button>В корзину</button>
-                                </a>
-                            </div>
-                        </div>
+                        <?php if (empty($newProducts)): ?>
+                            <p>Нет новых товаров.</p>
+                        <?php else: ?>
+                            <?php foreach ($newProducts as $item): ?>
+                                <div class="card">
+                                    <div class="img">
+                                        <a href="/pages/item.php?table=<?= $item['table_name'] ?>&id=<?= $item['id'] ?>">
+                                            <img src="assets/imgs/catalog/<?= htmlspecialchars($item['img']) ?>"
+                                                alt="<?= htmlspecialchars($item['name'], ENT_QUOTES) ?>">
+                                        </a>
+                                        <?php if (isset($_SESSION['user']['id'])): ?>
+                                            <?php if (is_favorite($connect, $_SESSION['user']['id'], $item['table_name'], $item['id'])): ?>
+                                                <a href="/lib/remove_from_fav.php?type=<?= $item['table_name'] ?>&id=<?= $item['id'] ?>"
+                                                    title="Убрать из избранного">
+                                                    <svg class="fav-button_filled" width="20" height="18" viewBox="0 0 20 18"
+                                                        xmlns="http://www.w3.org/2000/svg">
+                                                        <path
+                                                            d="M8.54918 16.0182L2.38816 9.52515C0.537281 7.57452 0.53728 4.39129 2.38816 2.44067C4.21083 0.519777 7.14313 0.519777 8.9658 2.44067C9.52799 3.03315 10.472 3.03315 11.0342 2.44067C12.8569 0.519777 15.7892 0.519776 17.6118 2.44067C19.4627 4.39129 19.4627 7.57452 17.6118 9.52515L11.4508 16.0182C10.6622 16.8493 9.33784 16.8493 8.54918 16.0182Z" />
+                                                    </svg>
+                                                </a>
+                                            <?php else: ?>
+                                                <a href="/lib/add_to_fav.php?type=<?= $item['table_name'] ?>&id=<?= $item['id'] ?>"
+                                                    title="В избранное">
+                                                    <svg class="fav-button" width="20" height="18" viewBox="0 0 20 18"
+                                                        xmlns="http://www.w3.org/2000/svg">
+                                                        <path
+                                                            d="M8.54918 16.0182L2.38816 9.52515C0.537281 7.57452 0.53728 4.39129 2.38816 2.44067C4.21083 0.519777 7.14313 0.519777 8.9658 2.44067C9.52799 3.03315 10.472 3.03315 11.0342 2.44067C12.8569 0.519777 15.7892 0.519776 17.6118 2.44067C19.4627 4.39129 19.4627 7.57452 17.6118 9.52515L11.4508 16.0182C10.6622 16.8493 9.33784 16.8493 8.54918 16.0182Z" />
+                                                    </svg>
+                                                </a>
+                                            <?php endif; ?>
+                                        <?php endif; ?>
+                                    </div>
+                                    <div class="card__container">
+                                        <div class="info">
+                                            <p class="title"><?= htmlspecialchars($item['name'], ENT_QUOTES) ?></p>
+                                            <div class="tag"><?= htmlspecialchars($item['category'], ENT_QUOTES) ?></div>
+                                            <p class="desc"><?= htmlspecialchars($item['desc'], ENT_QUOTES) ?></p>
+                                        </div>
+                                        <div class="bottom">
+                                            <p><?= number_format($item['price'], 0, ',', ' ') ?> ₽</p>
+                                            <?php if (isset($_SESSION['user']['id'])): ?>
+                                                <a
+                                                    href="/lib/add_to_cart.php?type=<?= $item['table_name'] ?>&id=<?= $item['id'] ?>">
+                                                    <button>В корзину</button>
+                                                </a>
+                                            <?php else: ?>
+                                                <button>В корзину</button>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
                     </div>
                 </div>
                 <img src="assets/imgs/slider/Right.svg" alt="Right">

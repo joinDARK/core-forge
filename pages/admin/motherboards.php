@@ -20,8 +20,42 @@ require '../../lib/checkIsAdmin.php';
     require '../../components/modals.php';
     require '../../components/header.php';
     require '../../lib/product_crud.php';
-    $table = 'motherboards';
-    $products = getAllProducts($table);
+    // Пример: получаем параметры
+    $search = trim($_GET['search'] ?? '');
+    $sort = $_GET['sort'] ?? 'id_desc';
+
+    // Строим SQL
+    $sql = "SELECT * FROM motherboards"; // или другая таблица
+    $conditions = [];
+    $params = [];
+
+    if ($search !== '') {
+        $conditions[] = "(name LIKE :search OR id = :idsearch)";
+        $params['search'] = "%$search%";
+        $params['idsearch'] = (int) $search;
+    }
+
+    if ($conditions) {
+        $sql .= " WHERE " . implode(' AND ', $conditions);
+    }
+
+    switch ($sort) {
+        case 'id_asc':
+            $sql .= " ORDER BY id ASC";
+            break;
+        case 'id_desc':
+        default:
+            $sql .= " ORDER BY id DESC";
+            break;
+    }
+
+    // Выполняем запрос
+    $stmt = $connect->prepare($sql);
+    foreach ($params as $key => $value) {
+        $stmt->bindValue(':' . $key, $value);
+    }
+    $stmt->execute();
+    $products = $stmt->fetchAll();
     ?>
     <dialog class="add_form">
         <form method="post" action="/lib/handlers/motherboards_crud.php" enctype="multipart/form-data">
@@ -80,11 +114,33 @@ require '../../lib/checkIsAdmin.php';
                                     <p class="data__item-info"><span>Картинка:</span> <?= $product['img'] ?></p>
                                     <p class="data__item-info"><span>Описание:</span> <?= $product['desc'] ?></p>
                                     <p class="data__item-info"><span>Цена:</span> <?= $product['price'] ?> ₽</p>
+                                    <p class="data__item-info"><span>Форм-фактор:</span>
+                                        <?= htmlspecialchars($product['form_factor'] ?? '', ENT_QUOTES) ?></p>
+                                    <p class="data__item-info"><span>Сокет:</span>
+                                        <?= htmlspecialchars($product['socket'] ?? '', ENT_QUOTES) ?></p>
+                                    <p class="data__item-info"><span>Чипсет:</span>
+                                        <?= htmlspecialchars($product['chipset'] ?? '', ENT_QUOTES) ?></p>
+                                    <p class="data__item-info"><span>Тип памяти:</span>
+                                        <?= htmlspecialchars($product['memory_type'] ?? '', ENT_QUOTES) ?></p>
+                                    <p class="data__item-info"><span>Слотов памяти:</span>
+                                        <?= htmlspecialchars($product['memory_slots'] ?? '', ENT_QUOTES) ?></p>
+                                    <p class="data__item-info"><span>Слотов M.2:</span>
+                                        <?= htmlspecialchars($product['m2_slots'] ?? '', ENT_QUOTES) ?></p>
+                                    <p class="data__item-info"><span>Поддержка NVMe:</span>
+                                        <?= isset($product['nvme_support']) ? ($product['nvme_support'] ? 'Да' : 'Нет') : '' ?>
+                                    </p>
                                     <div class="data__buttons-group">
                                         <button type="button" class="update-btn" data-id="<?= $product['id'] ?>"
                                             data-name="<?= htmlspecialchars($product['name'], ENT_QUOTES) ?>"
                                             data-desc="<?= htmlspecialchars($product['desc'], ENT_QUOTES) ?>"
-                                            data-price="<?= htmlspecialchars($product['price'], ENT_QUOTES) ?>">Изменить</button>
+                                            data-price="<?= htmlspecialchars($product['price'], ENT_QUOTES) ?>"
+                                            data-form_factor="<?= htmlspecialchars($product['form_factor'] ?? '', ENT_QUOTES) ?>"
+                                            data-socket="<?= htmlspecialchars($product['socket'] ?? '', ENT_QUOTES) ?>"
+                                            data-chipset="<?= htmlspecialchars($product['chipset'] ?? '', ENT_QUOTES) ?>"
+                                            data-memory_type="<?= htmlspecialchars($product['memory_type'] ?? '', ENT_QUOTES) ?>"
+                                            data-memory_slots="<?= htmlspecialchars($product['memory_slots'] ?? '', ENT_QUOTES) ?>"
+                                            data-m2_slots="<?= htmlspecialchars($product['m2_slots'] ?? '', ENT_QUOTES) ?>"
+                                            data-nvme_support="<?= isset($product['nvme_support']) ? (int) $product['nvme_support'] : '' ?>">Изменить</button>
                                         <form method="post" action="/lib/handlers/motherboards_crud.php">
                                             <input type="hidden" name="delete_id" value="<?= $product['id'] ?>">
                                             <button class="secondary">Удалить</button>

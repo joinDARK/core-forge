@@ -38,8 +38,16 @@ $total_quantity = 0;
                                 class="profile__email"><?= $_SESSION['user']['email'] ?></a>
                         </div>
                     </div>
-                    <a href="/pages/user_history.php">
-                        <button>История</button>
+                    <div class="profile__info-container">
+                        <img src="../assets/imgs/icons/location_on.svg" alt="location">
+                        <p class="profile__location"><?= $_SESSION['user']['address'] ?></p>
+                    </div>
+                    <div class="profile__info-container">
+                        <img src="../assets/imgs/icons/phone.svg" alt="phone">
+                        <p class="profile__location"><?= $_SESSION['user']['tel'] ?></p>
+                    </div>
+                    <a href="#">
+                        <button class="dark">Корзина</button>
                     </a>
                     <a href="/pages/user_fav.php">
                         <button>Избранные</button>
@@ -65,7 +73,8 @@ $total_quantity = 0;
                                     <td class="item__price"><?= number_format($product['price'], 0, ',', ' ') ?> ₽</td>
                                     <td class="item__price"><?= $item['quantity'] ?></td>
                                     <td>
-                                        <a href="/lib/remove_from_cart.php?type=<?= htmlspecialchars($item['product_type']) ?>&id=<?= (int)$item['product_id'] ?>" class="item__delete-btn">
+                                        <a href="/lib/remove_from_cart.php?type=<?= htmlspecialchars($item['product_type']) ?>&id=<?= (int) $item['product_id'] ?>"
+                                            class="item__delete-btn">
                                             <img src="../assets/imgs/icons/delete.svg" alt="delete">
                                         </a>
                                     </td>
@@ -81,7 +90,7 @@ $total_quantity = 0;
                         <tr>
                             <td class="item__name">Итого:</td>
                             <td class="item__price"><?= number_format($total, 0, ',', ' ') ?> ₽</td>
-                            <td class="item__price"><?=$total_quantity?></td>
+                            <td class="item__price"><?= $total_quantity ?></td>
                             <td></td>
                         </tr>
                     </tfoot>

@@ -44,13 +44,17 @@ function btnClass(string $file): string
                         class="profile__email"><?= $_SESSION['user']['email'] ?></a>
                 </div>
             </div>
-
+            <div class="profile__info-container">
+                <img src="../assets/imgs/icons/location_on.svg" alt="location">
+                <p class="profile__location"><?= $_SESSION['user']['address'] ?></p>
+            </div>
+            <div class="profile__info-container">
+                <img src="../assets/imgs/icons/phone.svg" alt="phone">
+                <p class="profile__location"><?= $_SESSION['user']['tel'] ?></p>
+            </div>
             <!-- ---------- Пользовательские страницы ---------- -->
             <a href="/pages/user_fav.php" class="burger-menu__link">
                 <button class="<?= btnClass('user_fav.php') ?>">Избранные</button>
-            </a>
-            <a href="/pages/user_history.php" class="burger-menu__link">
-                <button class="<?= btnClass('user_history.php') ?>">История</button>
             </a>
             <a href="/pages/user_cart.php" class="burger-menu__link">
                 <button class="<?= btnClass('user_cart.php') ?>">Корзина</button>
@@ -58,9 +62,9 @@ function btnClass(string $file): string
 
         <?php else: ?>
             <!-- ---------- Гость ---------- -->
-            <button class="login-button <?= btnClass('login.php') // если есть отдельная страница входа ?>"></button>
+            <button class="login-button <?= btnClass('login.php') // если есть отдельная страница входа ?>">Войти</button>
             <p>или</p>
-            <button class="reg-button <?= btnClass('register.php') // если есть отдельная страница регистрации ?>"></button>
+            <button class="reg-button <?= btnClass('register.php') // если есть отдельная страница регистрации ?>">Зарегистрироваться</button>
         <?php endif; ?>
     </div>
 </dialog>

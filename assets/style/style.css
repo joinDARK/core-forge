@@ -313,6 +313,11 @@ dialog form {
     margin-bottom: 16px;
 }
 
+.data__item .accordion__content-inner > .accordion.gray {
+    background-color: #292929;
+    width: 100%;
+}
+
 /* ─── Заголовок ─── */
 .accordion__header {
     padding: 20px;
@@ -548,6 +553,10 @@ main {
     padding: 0 23px;
 }
 
+.slider img[alt="Left"], .slider img[alt="Right"] {
+    cursor: pointer;
+}
+
 .review {
     width: 264px;
     padding: 16px;
@@ -579,7 +588,7 @@ main {
     display: flex;
     justify-content: space-between;
     gap: 72px;
-    align-items: flex-start;
+
     transition: transform 0.5s ease-in-out;
 }
 
@@ -877,9 +886,7 @@ input[type="search"] {
 }
 
 .file {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    width: 100%;
     padding: 8px 14px;
     border-radius: var(--border-radius);
     background-color: #454545;
@@ -1118,12 +1125,15 @@ input[type="search"] {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    align-items: center;
 }
 
 .burger-menu__body a,
 .burger-menu__body button {
     width: 100%;
+}
+
+.burger-menu__body p {
+    text-align: center;
 }
 
 .history-content__items {
@@ -1177,3 +1187,29 @@ input[type="search"] {
     border-radius: 5px;
 }
 
+.rating {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.rating label img {
+    width: 13px;
+    height: 13px;
+}
+
+.profile__info-container {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.profile__info-container img {
+    width: 20px;
+    height: 20px;
+}
+
+.profile__info-container p {
+    font-size: 14px;
+    font-weight: 300;
+}

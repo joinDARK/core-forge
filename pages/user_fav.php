@@ -57,8 +57,16 @@ require '../lib/checkAuth.php';
                                 class="profile__email"><?= $_SESSION['user']['email'] ?></a>
                         </div>
                     </div>
-                    <a href="/pages/user_history.php">
-                        <button>История</button>
+                    <div class="profile__info-container">
+                        <img src="../assets/imgs/icons/location_on.svg" alt="location">
+                        <p class="profile__location"><?= $_SESSION['user']['address'] ?></p>
+                    </div>
+                    <div class="profile__info-container">
+                        <img src="../assets/imgs/icons/phone.svg" alt="phone">
+                        <p class="profile__location"><?= $_SESSION['user']['tel'] ?></p>
+                    </div>
+                    <a href="/pages/user_cart.php">
+                        <button>Корзина</button>
                     </a>
                     <a href="#">
                         <button class="dark">Избранные</button>

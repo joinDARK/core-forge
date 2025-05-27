@@ -20,8 +20,42 @@ require '../../lib/checkIsAdmin.php';
     require '../../components/modals.php';
     require '../../components/header.php';
     require '../../lib/product_crud.php';
-    $table = 'hdds';
-    $products = getAllProducts($table);
+    // Пример: получаем параметры
+    $search = trim($_GET['search'] ?? '');
+    $sort = $_GET['sort'] ?? 'id_desc';
+
+    // Строим SQL
+    $sql = "SELECT * FROM hdds"; // или другая таблица
+    $conditions = [];
+    $params = [];
+
+    if ($search !== '') {
+        $conditions[] = "(name LIKE :search OR id = :idsearch)";
+        $params['search'] = "%$search%";
+        $params['idsearch'] = (int) $search;
+    }
+
+    if ($conditions) {
+        $sql .= " WHERE " . implode(' AND ', $conditions);
+    }
+
+    switch ($sort) {
+        case 'id_asc':
+            $sql .= " ORDER BY id ASC";
+            break;
+        case 'id_desc':
+        default:
+            $sql .= " ORDER BY id DESC";
+            break;
+    }
+
+    // Выполняем запрос
+    $stmt = $connect->prepare($sql);
+    foreach ($params as $key => $value) {
+        $stmt->bindValue(':' . $key, $value);
+    }
+    $stmt->execute();
+    $products = $stmt->fetchAll();
     ?>
     <dialog class="add_form">
         <form method="post" action="/lib/handlers/hdds_crud.php" enctype="multipart/form-data">
@@ -80,11 +114,26 @@ require '../../lib/checkIsAdmin.php';
                                     <p class="data__item-info"><span>Картинка:</span> <?= $product['img'] ?></p>
                                     <p class="data__item-info"><span>Описание:</span> <?= $product['desc'] ?></p>
                                     <p class="data__item-info"><span>Цена:</span> <?= $product['price'] ?> ₽</p>
+                                    <p class="data__item-info"><span>Объём (ГБ):</span>
+                                        <?= htmlspecialchars($product['capacity'] ?? '', ENT_QUOTES) ?></p>
+                                    <p class="data__item-info"><span>Скорость вращения (об/мин):</span>
+                                        <?= htmlspecialchars($product['rpm'] ?? '', ENT_QUOTES) ?></p>
+                                    <p class="data__item-info"><span>Макс. скорость передачи (МБ/с):</span>
+                                        <?= htmlspecialchars($product['max_transfer_rate'] ?? '', ENT_QUOTES) ?></p>
+                                    <p class="data__item-info"><span>Интерфейс:</span>
+                                        <?= htmlspecialchars($product['interface'] ?? '', ENT_QUOTES) ?></p>
+                                    <p class="data__item-info"><span>Уровень шума (дБ):</span>
+                                        <?= htmlspecialchars($product['noise_level'] ?? '', ENT_QUOTES) ?></p>
                                     <div class="data__buttons-group">
                                         <button type="button" class="update-btn" data-id="<?= $product['id'] ?>"
                                             data-name="<?= htmlspecialchars($product['name'], ENT_QUOTES) ?>"
                                             data-desc="<?= htmlspecialchars($product['desc'], ENT_QUOTES) ?>"
-                                            data-price="<?= htmlspecialchars($product['price'], ENT_QUOTES) ?>">Изменить</button>
+                                            data-price="<?= htmlspecialchars($product['price'], ENT_QUOTES) ?>"
+                                            data-capacity="<?= htmlspecialchars($product['capacity'] ?? '', ENT_QUOTES) ?>"
+                                            data-rpm="<?= htmlspecialchars($product['rpm'] ?? '', ENT_QUOTES) ?>"
+                                            data-max_transfer_rate="<?= htmlspecialchars($product['max_transfer_rate'] ?? '', ENT_QUOTES) ?>"
+                                            data-interface="<?= htmlspecialchars($product['interface'] ?? '', ENT_QUOTES) ?>"
+                                            data-noise_level="<?= htmlspecialchars($product['noise_level'] ?? '', ENT_QUOTES) ?>">Изменить</button>
                                         <form method="post" action="/lib/handlers/hdds_crud.php">
                                             <input type="hidden" name="delete_id" value="<?= $product['id'] ?>">
                                             <button class="secondary">Удалить</button>

@@ -20,8 +20,42 @@ require '../../lib/checkIsAdmin.php';
     require '../../components/modals.php';
     require '../../components/header.php';
     require '../../lib/product_crud.php';
-    $table = 'cases';
-    $products = getAllProducts($table);
+    // Пример: получаем параметры
+    $search = trim($_GET['search'] ?? '');
+    $sort = $_GET['sort'] ?? 'id_desc';
+
+    // Строим SQL
+    $sql = "SELECT * FROM cases"; // или другая таблица
+    $conditions = [];
+    $params = [];
+
+    if ($search !== '') {
+        $conditions[] = "(name LIKE :search OR id = :idsearch)";
+        $params['search'] = "%$search%";
+        $params['idsearch'] = (int) $search;
+    }
+
+    if ($conditions) {
+        $sql .= " WHERE " . implode(' AND ', $conditions);
+    }
+
+    switch ($sort) {
+        case 'id_asc':
+            $sql .= " ORDER BY id ASC";
+            break;
+        case 'id_desc':
+        default:
+            $sql .= " ORDER BY id DESC";
+            break;
+    }
+
+    // Выполняем запрос
+    $stmt = $connect->prepare($sql);
+    foreach ($params as $key => $value) {
+        $stmt->bindValue(':' . $key, $value);
+    }
+    $stmt->execute();
+    $products = $stmt->fetchAll();
     ?>
     <dialog class="add_form">
         <form method="post" action="/lib/handlers/cases_crud.php" enctype="multipart/form-data">
@@ -80,11 +114,30 @@ require '../../lib/checkIsAdmin.php';
                                     <p class="data__item-info"><span>Картинка:</span> <?= $product['img'] ?></p>
                                     <p class="data__item-info"><span>Описание:</span> <?= $product['desc'] ?></p>
                                     <p class="data__item-info"><span>Цена:</span> <?= $product['price'] ?> ₽</p>
+                                    <p class="data__item-info"><span>Форм-фактор корпуса:</span>
+                                        <?= htmlspecialchars($product['form_factor'] ?? '', ENT_QUOTES) ?></p>
+                                    <p class="data__item-info"><span>Подсветка (RGB):</span>
+                                        <?= isset($product['has_rgb']) ? ($product['has_rgb'] ? 'Да' : 'Нет') : '' ?></p>
+                                    <p class="data__item-info"><span>Форм-фактор материнской платы:</span>
+                                        <?= htmlspecialchars($product['mb_form_factor'] ?? '', ENT_QUOTES) ?></p>
+                                    <p class="data__item-info"><span>Форм-фактор блока питания:</span>
+                                        <?= htmlspecialchars($product['psu_form_factor'] ?? '', ENT_QUOTES) ?></p>
+                                    <p class="data__item-info"><span>Встроенное охлаждение:</span>
+                                        <?= isset($product['has_cooling']) ? ($product['has_cooling'] ? 'Да' : 'Нет') : '' ?>
+                                    </p>
+                                    <p class="data__item-info"><span>Встроенный блок питания:</span>
+                                        <?= isset($product['has_psu']) ? ($product['has_psu'] ? 'Да' : 'Нет') : '' ?></p>
                                     <div class="data__buttons-group">
                                         <button type="button" class="update-btn" data-id="<?= $product['id'] ?>"
                                             data-name="<?= htmlspecialchars($product['name'], ENT_QUOTES) ?>"
                                             data-desc="<?= htmlspecialchars($product['desc'], ENT_QUOTES) ?>"
-                                            data-price="<?= htmlspecialchars($product['price'], ENT_QUOTES) ?>">Изменить</button>
+                                            data-price="<?= htmlspecialchars($product['price'], ENT_QUOTES) ?>"
+                                            data-form_factor="<?= htmlspecialchars($product['form_factor'] ?? '', ENT_QUOTES) ?>"
+                                            data-has_rgb="<?= isset($product['has_rgb']) ? (int) $product['has_rgb'] : '' ?>"
+                                            data-mb_form_factor="<?= htmlspecialchars($product['mb_form_factor'] ?? '', ENT_QUOTES) ?>"
+                                            data-psu_form_factor="<?= htmlspecialchars($product['psu_form_factor'] ?? '', ENT_QUOTES) ?>"
+                                            data-has_cooling="<?= isset($product['has_cooling']) ? (int) $product['has_cooling'] : '' ?>"
+                                            data-has_psu="<?= isset($product['has_psu']) ? (int) $product['has_psu'] : '' ?>">Изменить</button>
                                         <form method="post" action="/lib/handlers/cases_crud.php">
                                             <input type="hidden" name="delete_id" value="<?= $product['id'] ?>">
                                             <button class="secondary">Удалить</button>

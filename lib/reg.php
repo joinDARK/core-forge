@@ -15,6 +15,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $password = htmlspecialchars(trim($_POST['password'])) ?? '';
     $repeat_password = htmlspecialchars(trim($_POST['repeat_password'])) ?? '';
     $email = htmlspecialchars(trim($_POST['email']) ?? '');
+    $address = htmlspecialchars(trim($_POST['address']) ?? '');
+    $tel = htmlspecialchars(trim($_POST['tel']) ?? '');
 
     // Валидация полей
     if (empty($password)) {
@@ -39,6 +41,14 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         $response['errors']['name'] = 'Имя не может быть пустым';
     }
 
+    if (empty($address)) {
+        $response['errors']['address'] = 'Адрес не может быть пустым';
+    }
+
+    if (empty($tel)) {
+        $response['errors']['tel'] = 'Телефон не может быть пустым';
+    }
+
     // Проверяем, существует ли пользователь с таким логином или email
     try {
         $stmt = $connect->prepare('SELECT * FROM users WHERE email = :email');
@@ -61,10 +71,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     try {
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-        $stmt = $connect->prepare('INSERT INTO users (name, password, email) VALUES (:name, :password, :email)');
+        $stmt = $connect->prepare('INSERT INTO users (name, password, email, address, tel) VALUES (:name, :password, :email, :address, :tel)');
         $stmt->bindParam(':name', $name);
         $stmt->bindParam(':password', $hashed_password);
         $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':address', $address);
+        $stmt->bindParam(':tel', $tel);
 
         if ($stmt->execute()) {
             $response['success'] = true;

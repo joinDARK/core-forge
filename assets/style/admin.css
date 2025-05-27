@@ -81,4 +81,90 @@
 
 .status__tag_conf {
     background-color: #37980e;
-} 
+}
+
+.order-products {
+    width: 100%;
+	border: none;
+	margin-bottom: 20px;
+	border-collapse: separate;
+    border-spacing: 0;
+}
+
+.order-products thead th {
+	font-weight: bold;
+	text-align: left;
+	border: none;
+	padding: 10px 15px;
+	background: #1F1F1F;
+	font-size: 14px;
+	border-top: 1px solid #464646;
+}
+
+.order-products tr th:first-child, .order-products tr td:first-child {
+	border-left: 1px solid #464646;
+}
+.order-products tr th:last-child, .order-products tr td:last-child {
+	border-right: 1px solid #464646;
+}
+.order-products thead tr th:first-child {
+	border-radius: 20px 0 0 0;
+}
+.order-products thead tr th:last-child {
+	border-radius: 0 20px 0 0;
+}
+.order-products tbody td {
+	text-align: left;
+	border: none;
+	padding: 10px 15px;
+	font-size: 14px;
+	vertical-align: middle;
+}
+.order-products tbody tr:last-child td {
+	border-bottom: 1px solid #464646;
+}
+.order-products tbody tr:last-child td:first-child {
+	border-radius: 0 0 0 20px;
+}
+.order-products tbody tr:last-child td:last-child {
+	border-radius: 0 0 20px 0;
+}
+
+button.item__delete-btn {
+    border: none;
+}
+
+button.item__delete-btn:hover {
+    background-color: #f13f1b;
+}
+
+button.item__delete-btn:active {
+    background-color: #b62508;
+}
+
+.pdf-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.pdf-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.pdf-item a {
+    width: 570px;
+}
+
+.data__item-info_container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.data__rating {
+    display: flex;
+}

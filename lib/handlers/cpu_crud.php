@@ -21,6 +21,12 @@ try {
             'name' => trim($_POST['name'] ?? ''),
             'desc' => trim($_POST['desc'] ?? ''),
             'price' => trim($_POST['price'] ?? ''),
+            'socket' => trim($_POST['socket'] ?? ''),
+            'core_count' => isset($_POST['core_count']) ? (int) $_POST['core_count'] : null,
+            'thread_count' => isset($_POST['thread_count']) ? (int) $_POST['thread_count'] : null,
+            'tdp' => isset($_POST['tdp']) ? (int) $_POST['tdp'] : null,
+            'frequency' => isset($_POST['frequency']) ? (float) $_POST['frequency'] : null,
+            'memory_type' => trim($_POST['memory_type'] ?? ''),
         ];
 
         // 3) Обработка загрузки изображения (опционально)
@@ -41,8 +47,18 @@ try {
         }
 
         // 4) Валидация: все поля обязательны, кроме описания и изображения
-        foreach (['name', 'price'] as $field) {
-            if ($data[$field] === '') {
+        $requiredFields = [
+            'name',
+            'price',
+            'socket',
+            'core_count',
+            'thread_count',
+            'tdp',
+            'frequency',
+            'memory_type'
+        ];
+        foreach ($requiredFields as $field) {
+            if ($data[$field] === '' || $data[$field] === null) {
                 throw new Exception("Поле «{$field}» обязательно для заполнения.");
             }
         }

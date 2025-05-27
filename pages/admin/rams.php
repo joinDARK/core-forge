@@ -20,8 +20,42 @@ require '../../lib/checkIsAdmin.php';
     require '../../components/modals.php';
     require '../../components/header.php';
     require '../../lib/product_crud.php';
-    $table = 'rams';
-    $products = getAllProducts($table);
+    // Пример: получаем параметры
+    $search = trim($_GET['search'] ?? '');
+    $sort = $_GET['sort'] ?? 'id_desc';
+
+    // Строим SQL
+    $sql = "SELECT * FROM rams"; // или другая таблица
+    $conditions = [];
+    $params = [];
+
+    if ($search !== '') {
+        $conditions[] = "(name LIKE :search OR id = :idsearch)";
+        $params['search'] = "%$search%";
+        $params['idsearch'] = (int) $search;
+    }
+
+    if ($conditions) {
+        $sql .= " WHERE " . implode(' AND ', $conditions);
+    }
+
+    switch ($sort) {
+        case 'id_asc':
+            $sql .= " ORDER BY id ASC";
+            break;
+        case 'id_desc':
+        default:
+            $sql .= " ORDER BY id DESC";
+            break;
+    }
+
+    // Выполняем запрос
+    $stmt = $connect->prepare($sql);
+    foreach ($params as $key => $value) {
+        $stmt->bindValue(':' . $key, $value);
+    }
+    $stmt->execute();
+    $products = $stmt->fetchAll();
     ?>
     <dialog class="add_form">
         <form method="post" action="/lib/handlers/rams_crud.php" enctype="multipart/form-data">
@@ -80,11 +114,26 @@ require '../../lib/checkIsAdmin.php';
                                     <p class="data__item-info"><span>Картинка:</span> <?= $product['img'] ?></p>
                                     <p class="data__item-info"><span>Описание:</span> <?= $product['desc'] ?></p>
                                     <p class="data__item-info"><span>Цена:</span> <?= $product['price'] ?> ₽</p>
+                                    <p class="data__item-info"><span>Тип памяти:</span>
+                                        <?= htmlspecialchars($product['memory_type'] ?? '', ENT_QUOTES) ?></p>
+                                    <p class="data__item-info"><span>Частота (МГц):</span>
+                                        <?= htmlspecialchars($product['frequency'] ?? '', ENT_QUOTES) ?></p>
+                                    <p class="data__item-info"><span>Количество модулей:</span>
+                                        <?= htmlspecialchars($product['module_count'] ?? '', ENT_QUOTES) ?></p>
+                                    <p class="data__item-info"><span>Размер одного модуля (ГБ):</span>
+                                        <?= htmlspecialchars($product['module_size'] ?? '', ENT_QUOTES) ?></p>
+                                    <p class="data__item-info"><span>Общий объём (ГБ):</span>
+                                        <?= htmlspecialchars($product['total_size'] ?? '', ENT_QUOTES) ?></p>
                                     <div class="data__buttons-group">
                                         <button type="button" class="update-btn" data-id="<?= $product['id'] ?>"
                                             data-name="<?= htmlspecialchars($product['name'], ENT_QUOTES) ?>"
                                             data-desc="<?= htmlspecialchars($product['desc'], ENT_QUOTES) ?>"
-                                            data-price="<?= htmlspecialchars($product['price'], ENT_QUOTES) ?>">Изменить</button>
+                                            data-price="<?= htmlspecialchars($product['price'], ENT_QUOTES) ?>"
+                                            data-memory_type="<?= htmlspecialchars($product['memory_type'] ?? '', ENT_QUOTES) ?>"
+                                            data-frequency="<?= htmlspecialchars($product['frequency'] ?? '', ENT_QUOTES) ?>"
+                                            data-module_count="<?= htmlspecialchars($product['module_count'] ?? '', ENT_QUOTES) ?>"
+                                            data-module_size="<?= htmlspecialchars($product['module_size'] ?? '', ENT_QUOTES) ?>"
+                                            data-total_size="<?= htmlspecialchars($product['total_size'] ?? '', ENT_QUOTES) ?>">Изменить</button>
                                         <form method="post" action="/lib/handlers/rams_crud.php">
                                             <input type="hidden" name="delete_id" value="<?= $product['id'] ?>">
                                             <button class="secondary">Удалить</button>

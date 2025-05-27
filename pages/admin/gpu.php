@@ -17,11 +17,47 @@ require '../../lib/checkIsAdmin.php';
 
 <body>
     <?php
+    $product_type = 'gpus'; // подставляй для своей страницы, например 'cpus'
     require '../../components/modals.php';
+    require '../../components/product_file_modal.php';
     require '../../components/header.php';
     require '../../lib/product_crud.php';
-    $table = 'videocards';
-    $products = getAllProducts($table);
+    require '../../lib/get_product_pdfs.php';
+    $search = trim($_GET['search'] ?? '');
+    $sort = $_GET['sort'] ?? 'id_desc';
+
+    // Строим SQL
+    $sql = "SELECT * FROM gpus"; // или другая таблица
+    $conditions = [];
+    $params = [];
+
+    if ($search !== '') {
+        $conditions[] = "(name LIKE :search OR id = :idsearch)";
+        $params['search'] = "%$search%";
+        $params['idsearch'] = (int) $search;
+    }
+
+    if ($conditions) {
+        $sql .= " WHERE " . implode(' AND ', $conditions);
+    }
+
+    switch ($sort) {
+        case 'id_asc':
+            $sql .= " ORDER BY id ASC";
+            break;
+        case 'id_desc':
+        default:
+            $sql .= " ORDER BY id DESC";
+            break;
+    }
+
+    // Выполняем запрос
+    $stmt = $connect->prepare($sql);
+    foreach ($params as $key => $value) {
+        $stmt->bindValue(':' . $key, $value);
+    }
+    $stmt->execute();
+    $products = $stmt->fetchAll();
     ?>
     <dialog class="add_form">
         <form method="post" action="/lib/handlers/gpu_crud.php" enctype="multipart/form-data">
@@ -100,8 +136,57 @@ require '../../lib/checkIsAdmin.php';
                                     </p>
                                     <p class="data__item-info"><span>Разъемы дополнительного питания:</span>
                                         <?= $product['additional_power_connectors'] ?></p>
-                                    <p class="data__item-info"><span>Файлы:</span> <?= $product['graphics_processor'] ?></p>
                                     <p class="data__item-info"><span>Цена:</span> <?= $product['price'] ?> ₽</p>
+                                    <?php
+                                    $pdfs = get_product_pdfs($connect, $product_type, $product['id']);
+                                    ?>
+                                    <div class="accordion gray">
+                                        <div class="accordion__header">
+                                            <p class="accordion__title">PDF-файлы</p>
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="M5 9L11.2191 14.3306C11.6684 14.7158 12.3316 14.7158 12.7809 14.3306L19 9"
+                                                    stroke="#EEF0F5" stroke-width="1.5" stroke-linecap="round" />
+                                            </svg>
+                                        </div>
+                                        <div class="accordion__content">
+                                            <div class="accordion__content-inner">
+                                                <!-- Список PDF -->
+                                                <?php if (empty($pdfs)): ?>
+                                                    <div class="pdf-empty">Нет файлов</div>
+                                                <?php else: ?>
+                                                    <div class="pdf-list">
+                                                        <?php foreach ($pdfs as $pdf): ?>
+                                                            <div class="pdf-item">
+                                                                <a href="/assets/uploads/<?= htmlspecialchars($pdf['filename']) ?>"
+                                                                    target="_blank">
+                                                                    <?= htmlspecialchars($pdf['original_name']) ?>
+                                                                </a>
+                                                                <form method="post" action="/lib/delete_product_file.php"
+                                                                    style="display:inline;">
+                                                                    <input type="hidden" name="file_id" value="<?= $pdf['id'] ?>">
+                                                                    <input type="hidden" name="product_type"
+                                                                        value="<?= $product_type ?>">
+                                                                    <input type="hidden" name="product_id"
+                                                                        value="<?= $product['id'] ?>">
+                                                                    <button type="submit" onclick="return confirm('Удалить файл?')"
+                                                                        class="item__delete-btn" style="margin-left:6px;">
+                                                                        <img src="../../assets/imgs/icons/delete.svg"
+                                                                            alt="delete">
+                                                                    </button>
+                                                                </form>
+                                                            </div>
+                                                        <?php endforeach; ?>
+                                                    </div>
+                                                <?php endif; ?>
+                                                <button type="button" class="add-file-btn"
+                                                    onclick="showAddFileModal(<?= $product['id'] ?>, 'gpus')">
+                                                    Добавить PDF-файл
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="data__buttons-group">
                                         <button type="button" class="update-btn" data-id="<?= $product['id'] ?>"
                                             data-name="<?= htmlspecialchars($product['name'], ENT_QUOTES) ?>"
